@@ -8,10 +8,10 @@
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.0.1
+v0.0.2
 ## todo
 
-- [ ] res&req model
+- [-] res&req model
 - [ ] OAuth2 model
 - [ ] register model
 ... need more

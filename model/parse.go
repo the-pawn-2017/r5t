@@ -25,29 +25,34 @@ func ParseModel(t reflect.Type, s *openapi3.Schema) {
 		s.Type = vInStruct.Type
 	case reflect.Struct:
 		s.Type = &openapi3.Types{openapi3.TypeObject}
+		if s.Properties == nil {
+			s.Properties = openapi3.Schemas{}
+		}
 		// every item should deal
 		for i := 0; i < t.NumField(); i++ {
 			// jump out private
 			if t.Field(i).PkgPath != "" {
 				continue
 			}
-			tag, have := t.Field(i).Tag.Lookup("json")
-			if s.Properties == nil {
-				s.Properties = openapi3.Schemas{}
+			// embed struct
+			if t.Field(i).Anonymous {
+				ParseModel(t.Field(i).Type, s)
+				continue
 			}
+			tag, have := t.Field(i).Tag.Lookup("json")
+			var realName string
 			if have {
-				s.Title = tag
+				realName = tag
 			} else {
-				s.Title = t.Field(i).Name
+				realName = t.Field(i).Name
 			}
 			vInStruct := new(openapi3.Schema)
 			ParseModel(t.Field(i).Type, vInStruct)
-			s.Properties[s.Title] = &openapi3.SchemaRef{
+			s.Properties[realName] = &openapi3.SchemaRef{
 				Value: vInStruct,
 			}
-
 		}
-	// case reflect.Map 缓一下
+	// case reflect.Map now, do not support map, need dev
 	case reflect.Array, reflect.Slice:
 		s.Type = &openapi3.Types{openapi3.TypeArray}
 		s.Items = new(openapi3.SchemaRef)

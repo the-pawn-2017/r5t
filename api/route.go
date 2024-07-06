@@ -1,7 +1,10 @@
 package api
 
 import (
+	"log"
 	"r5t/model"
+	"r5t/req"
+	"r5t/res"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
@@ -55,7 +58,7 @@ func (api *API) DealPathItem(operation *openapi3.Operation, opts []PathOpts) *AP
 		return api.dealPathItem(api.pathItem.Get, opts)
 	}
 */
-func (api *API) Request(m model.Model, opts ...model.ReqModelOpts) *API {
+func (api *API) Request(m model.Model, opts ...req.ReqModelOpts) *API {
 	api.Operation.RequestBody = &openapi3.RequestBodyRef{
 		Value: &openapi3.RequestBody{
 			Content: make(openapi3.Content),
@@ -67,7 +70,7 @@ func (api *API) Request(m model.Model, opts ...model.ReqModelOpts) *API {
 	}
 	content := api.Operation.RequestBody.Value.Content
 	for k := range content {
-		if k == model.ReqJSON {
+		if k == req.ReqJSON {
 			schema := new(openapi3.Schema)
 			model.ParseModel(m.Type, schema)
 			item := &openapi3.MediaType{
@@ -76,17 +79,35 @@ func (api *API) Request(m model.Model, opts ...model.ReqModelOpts) *API {
 				},
 			}
 			item.Schema.Value = schema
-			// item.Schema.Value = &openapi3.Schema{
-			// 	Description: "这个是描述，我明白",
-			// 	Type:        &openapi3.Types{openapi3.TypeString},
-			// 	Example:     "15",
-			// }
 			api.Operation.RequestBody.Value.Content[k] = item
 		}
 	}
 	return api
 }
-func (api *API) Response(code int, m model.Model) *API {
+func (api *API) Response(code int, m model.Model, opts ...res.ResModelOpts) *API {
+	resbody := &openapi3.Response{
+		Content: make(openapi3.Content),
+	}
+	for _, v := range opts {
+		v(resbody)
+	}
+	for k := range resbody.Content {
+		if k == res.ReqJSON {
+			log.Println("我进来了")
+			schema := new(openapi3.Schema)
+			model.ParseModel(m.Type, schema)
+			item := &openapi3.MediaType{
+				Schema: &openapi3.SchemaRef{
+					Value: nil,
+				},
+			}
+			item.Schema.Value = schema
+			log.Println(item.Schema.Value)
+			resbody.Content[k] = item
+		}
+	}
+
+	api.Operation.AddResponse(code, resbody)
 	return api
 }
 func (api *API) Header(name string, value string) *API {
