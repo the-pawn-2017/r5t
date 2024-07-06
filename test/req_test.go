@@ -18,10 +18,10 @@ func TestReqStruct(t *testing.T) {
 		}
 	}
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).
+	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).
 		Request(model.ModelOf[TestModel](), req.WithJSON(true, "一段说明"))
-	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	s.Delete("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
+	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s.Delete("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	t.Log(string(re))
 }
@@ -35,7 +35,7 @@ func TestReqStructHasEmbed(t *testing.T) {
 		TestModel3
 	}
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).Request(model.ModelOf[TestModel](), req.WithJSON(true, "一段说明"))
+	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).ReqJSON(model.ModelOf[TestModel](), req.WithRequired(true))
 	re, _ := s.MarshalJSON()
 	t.Log(string(re))
 }
@@ -43,7 +43,15 @@ func TestReqStructHasEmbed(t *testing.T) {
 func TestReqArray(t *testing.T) {
 	type TestStringArr []string
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).Request(model.ModelOf[TestStringArr](), req.WithJSON(true, "我真的佛啦！"))
+	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).ReqJSON(model.ModelOf[TestStringArr](), req.WithDesc("我真的佛啦！"))
+	re, _ := s.MarshalJSON()
+	t.Log(string(re))
+}
+
+func TestReqJSON(t *testing.T) {
+	type TestStringArr []string
+	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
+	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).ReqJSON(model.ModelOf[TestStringArr]())
 	re, _ := s.MarshalJSON()
 	t.Log(string(re))
 }

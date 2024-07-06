@@ -12,7 +12,7 @@ import (
 
 func TestSpecGen(t *testing.T) {
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
+	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	t.Log(re)
 }
@@ -51,10 +51,10 @@ func serveJSON(w http.ResponseWriter, r *http.Request) {
 		Two string
 	}
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).
+	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).
 		Request(model.ModelOf[TestModel](), req.WithJSON(true, "一段说明"))
-	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	s.Delete("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
+	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s.Delete("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	w.Write(re)
 }

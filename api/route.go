@@ -2,7 +2,9 @@ package api
 
 import (
 	"log"
+	"r5t/header"
 	"r5t/model"
+	"r5t/param"
 	"r5t/req"
 	"r5t/res"
 
@@ -16,20 +18,20 @@ type API struct {
 
 type PathOpts func(s *openapi3.Operation)
 
-func WithPathDesc(desc string) PathOpts {
+func WithDesc(desc string) PathOpts {
 	return func(s *openapi3.Operation) {
 		s.Description = desc
 
 	}
 }
 
-func WithPathSummary(desc string) PathOpts {
+func WithSummary(desc string) PathOpts {
 	return func(s *openapi3.Operation) {
 		s.Description = desc
 	}
 }
 
-func WithPathTags(tags []string) PathOpts {
+func WithTags(tags []string) PathOpts {
 	return func(s *openapi3.Operation) {
 		s.Tags = tags
 	}
@@ -58,6 +60,7 @@ func (api *API) DealPathItem(operation *openapi3.Operation, opts []PathOpts) *AP
 		return api.dealPathItem(api.pathItem.Get, opts)
 	}
 */
+// Deprecated: Use ReqJSON instead.
 func (api *API) Request(m model.Model, opts ...req.ReqModelOpts) *API {
 	api.Operation.RequestBody = &openapi3.RequestBodyRef{
 		Value: &openapi3.RequestBody{
@@ -70,7 +73,7 @@ func (api *API) Request(m model.Model, opts ...req.ReqModelOpts) *API {
 	}
 	content := api.Operation.RequestBody.Value.Content
 	for k := range content {
-		if k == req.ReqJSON {
+		if k == header.ApplicationJson {
 			schema := new(openapi3.Schema)
 			model.ParseModel(m.Type, schema)
 			item := &openapi3.MediaType{
@@ -84,6 +87,23 @@ func (api *API) Request(m model.Model, opts ...req.ReqModelOpts) *API {
 	}
 	return api
 }
+
+// theRequest is json and form
+func (api *API) ReqJSON(m model.Model, opts ...req.ReqModelOpts) *API {
+	jsonContent := openapi3.NewContentWithJSONSchema(&openapi3.Schema{})
+	api.Operation.RequestBody = &openapi3.RequestBodyRef{
+		Value: &openapi3.RequestBody{
+			Content: jsonContent,
+		},
+	}
+	for _, v := range opts {
+		v(api.Operation.RequestBody.Value)
+
+	}
+	model.ParseModel(m.Type, jsonContent[header.ApplicationJson].Schema.Value)
+	return api
+}
+
 func (api *API) Response(code int, m model.Model, opts ...res.ResModelOpts) *API {
 	resbody := &openapi3.Response{
 		Content: make(openapi3.Content),
@@ -110,7 +130,12 @@ func (api *API) Response(code int, m model.Model, opts ...res.ResModelOpts) *API
 	api.Operation.AddResponse(code, resbody)
 	return api
 }
-func (api *API) Header(name string, value string) *API {
+
+func (api *API) Param(opts ...param.ReqParamOpts) *API {
+	api.Operation.Parameters = make(openapi3.Parameters, 0)
+	for _, v := range opts {
+		v(&api.Operation.Parameters)
+	}
 	return api
 }
 

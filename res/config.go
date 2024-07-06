@@ -21,3 +21,8 @@ func WithJSON(required bool, description string) ResModelOpts {
 		s.Content[ReqJSON] = nil
 	}
 }
+
+func WithHeader() ResModelOpts {
+	return func(s *openapi3.Response) {
+	}
+}

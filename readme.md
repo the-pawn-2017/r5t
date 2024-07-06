@@ -10,10 +10,13 @@
 ## version
 v0.0.2
 ## todo
-
-- [-] res&req model
+- [ ] all components example and limit
+- [x] param config, but no example and limit
+- [x] res&req model,now,it can use json, others type in developing.
 - [ ] OAuth2 model
 - [ ] register model
+- [ ] complete test
+- [ ] gin &echo support
 ... need more
 
 ## example:

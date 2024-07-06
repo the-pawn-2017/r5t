@@ -1,23 +1,35 @@
 package req
 
-import "github.com/getkin/kin-openapi/openapi3"
+import (
+	"r5t/header"
+
+	"github.com/getkin/kin-openapi/openapi3"
+)
 
 type ReqModelOpts func(s *openapi3.RequestBody)
-
-const ReqJSON = "application/json"
-const ReqXML = "application/xml"
-
-// need dev
-const ReqForm = "application/xxxxxx"
 
 // about request
 func WithForm(required bool, description string) ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
-		s.Content[ReqForm] = nil
+		s.Content[header.MultipartFormData] = nil
 	}
 }
+
+// Deprecated: use WithOther instead.
 func WithJSON(required bool, description string) ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
-		s.Content[ReqJSON] = nil
+		s.Content[header.ApplicationJson] = nil
+	}
+}
+
+func WithRequired(required bool) ReqModelOpts {
+	return func(s *openapi3.RequestBody) {
+		s.Required = true
+	}
+}
+
+func WithDesc(description string) ReqModelOpts {
+	return func(s *openapi3.RequestBody) {
+		s.Description = description
 	}
 }
