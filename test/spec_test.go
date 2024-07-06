@@ -2,8 +2,9 @@ package test
 
 import (
 	"net/http"
-	"r5t/api"
 	"r5t/model"
+	"r5t/param"
+	"r5t/path"
 	"r5t/spec"
 	"testing"
 	"text/template"
@@ -11,7 +12,7 @@ import (
 
 func TestSpecGen(t *testing.T) {
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"), spec.WithServer("http://409.ink", "a example ink"), spec.WithContact("water", "test@test.com", "409.ink"))
-	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s.Get("test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	t.Log(string(re))
 }
@@ -50,10 +51,10 @@ func serveJSON(w http.ResponseWriter, r *http.Request) {
 		Two string
 	}
 	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"), spec.WithServer("http://409.ink", "a example ink"), spec.WithContact("water", "test@test.com", "409.ink"))
-	s.Get("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).
+	s.Get("/test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"})).ParamQuery("gkd", param.WithDesc("我是一个描述"), param.WithExample("123")).
 		ReqJSON(model.ModelOf[TestModel]())
-	s.Post("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
-	s.Delete("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s.Post("/test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"}))
+	s.Delete("/test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	w.Write(re)
 }

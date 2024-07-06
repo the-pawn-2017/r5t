@@ -5,6 +5,7 @@ import (
 	"r5t/header"
 	"r5t/model"
 	"r5t/param"
+	"r5t/path"
 	"r5t/req"
 	"r5t/res"
 
@@ -16,35 +17,8 @@ type API struct {
 	Operation *openapi3.Operation
 }
 
-type PathOpts func(s *openapi3.Operation)
-
-func WithDesc(desc string) PathOpts {
-	return func(s *openapi3.Operation) {
-		s.Description = desc
-
-	}
-}
-
-func WithSummary(desc string) PathOpts {
-	return func(s *openapi3.Operation) {
-		s.Description = desc
-	}
-}
-
-func WithTags(tags []string) PathOpts {
-	return func(s *openapi3.Operation) {
-		s.Tags = tags
-	}
-}
-
-func WithSecurity() PathOpts {
-	return func(s *openapi3.Operation) {
-		// s.Description = desc
-	}
-}
-
 // deal all
-func (api *API) DealPathItem(operation *openapi3.Operation, opts []PathOpts) *API {
+func (api *API) DealPathItem(operation *openapi3.Operation, opts []path.PathOpts) *API {
 
 	for _, v := range opts {
 		v(operation)
@@ -131,12 +105,35 @@ func (api *API) Response(code int, m model.Model, opts ...res.ResModelOpts) *API
 	return api
 }
 
-func (api *API) Param(opts ...param.ReqParamOpts) *API {
-	api.Operation.Parameters = make(openapi3.Parameters, 0)
+func (api *API) dealParam(name string, in string, opts []param.ReqParamOpts) *API {
+	if len(api.Operation.Parameters) == 0 {
+		api.Operation.Parameters = make(openapi3.Parameters, 0)
+	}
+	pList := &api.Operation.Parameters
+	p := openapi3.ParameterRef{
+		Value: &openapi3.Parameter{
+			In:   in,
+			Name: name,
+		}}
+	*pList = append(*pList, &p)
+
 	for _, v := range opts {
-		v(&api.Operation.Parameters)
+		v(p.Value)
 	}
 	return api
+}
+
+func (api *API) ParamPath(name string, opts ...param.ReqParamOpts) *API {
+	return api.dealParam(name, param.InPath, opts)
+}
+func (api *API) ParamCookie(name string, opts ...param.ReqParamOpts) *API {
+	return api.dealParam(name, param.InCookie, opts)
+}
+func (api *API) ParamHeader(name string, opts ...param.ReqParamOpts) *API {
+	return api.dealParam(name, param.InHeader, opts)
+}
+func (api *API) ParamQuery(name string, opts ...param.ReqParamOpts) *API {
+	return api.dealParam(name, param.InQuery, opts)
 }
 
 // registerModel dev

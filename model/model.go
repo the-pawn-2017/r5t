@@ -9,10 +9,14 @@ import (
 // Model is a model used in one or more routes.
 type ModelOpts func(s *openapi3.Schema)
 
-// some function
-func WithModelDesc(desc string) ModelOpts {
+func WithDesc(desc string) ModelOpts {
 	return func(s *openapi3.Schema) {
 		s.Description = desc
+	}
+}
+func WithExample[T any](example T) ModelOpts {
+	return func(s *openapi3.Schema) {
+		s.Example = example
 	}
 }
 

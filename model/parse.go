@@ -6,7 +6,6 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
-// need to debug
 func ParseModel(t reflect.Type, s *openapi3.Schema) {
 	switch t.Kind() {
 	case reflect.Bool:

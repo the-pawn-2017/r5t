@@ -2,6 +2,7 @@ package spec
 
 import (
 	"r5t/api"
+	"r5t/path"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
@@ -66,7 +67,7 @@ func NewSpec(specs ...SpecOpts) *spec {
 	return &s
 }
 
-func (s *spec) addNewApi(path string, method string, opts []api.PathOpts) *api.API {
+func (s *spec) addNewApi(path string, method string, opts []path.PathOpts) *api.API {
 	var newApi *api.API = &api.API{
 		Operation: &openapi3.Operation{},
 	}
@@ -76,19 +77,19 @@ func (s *spec) addNewApi(path string, method string, opts []api.PathOpts) *api.A
 }
 
 // some options function
-func (s *spec) Get(path string, opts ...api.PathOpts) *api.API {
+func (s *spec) Get(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "GET", opts)
 }
-func (s *spec) Post(path string, opts ...api.PathOpts) *api.API {
+func (s *spec) Post(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "POST", opts)
 }
-func (s *spec) Delete(path string, opts ...api.PathOpts) *api.API {
+func (s *spec) Delete(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "DELETE", opts)
 }
-func (s *spec) Put(path string, opts ...api.PathOpts) *api.API {
+func (s *spec) Put(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "PUT", opts)
 }
