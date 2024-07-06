@@ -12,7 +12,7 @@ const (
 	InCookie = "cookie"
 )
 
-func WithQuery(name string, examples ...[]any) ReqParamOpts {
+func WithQuery(name string, examples ...any) ReqParamOpts {
 	return func(p *openapi3.Parameters) {
 		*p = append(*p, &openapi3.ParameterRef{
 			Value: &openapi3.Parameter{

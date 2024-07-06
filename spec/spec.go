@@ -15,12 +15,12 @@ func (s *spec) MarshalJSON() ([]byte, error) {
 	return s.root.MarshalJSON()
 }
 
-type SpecOpts func(s *openapi3.Info)
+type SpecOpts func(s *openapi3.T)
 
 // contact
 func WithContact(name string, mail string, url string) SpecOpts {
-	return func(s *openapi3.Info) {
-		s.Contact = &openapi3.Contact{
+	return func(s *openapi3.T) {
+		s.Info.Contact = &openapi3.Contact{
 			Name:  name,
 			Email: mail,
 			URL:   url,
@@ -30,24 +30,37 @@ func WithContact(name string, mail string, url string) SpecOpts {
 
 // title
 func WithTitle(title string) SpecOpts {
-	return func(s *openapi3.Info) {
-		s.Title = title
+	return func(s *openapi3.T) {
+		s.Info.Title = title
 	}
 }
 
 // version
 func WithVersion(v string) SpecOpts {
-	return func(s *openapi3.Info) {
-		s.Version = v
+	return func(s *openapi3.T) {
+		s.Info.Version = v
+	}
+}
+
+// servers
+func WithServer(url string, desc string) SpecOpts {
+	return func(s *openapi3.T) {
+		s.Servers = append(s.Servers, &openapi3.Server{
+			URL:         url,
+			Description: desc,
+		})
 	}
 }
 
 // 新建一个Spec
 func NewSpec(specs ...SpecOpts) *spec {
 	var s spec
+	s.root = openapi3.T{
+		Info: &openapi3.Info{},
+	}
 	s.root.Info = &openapi3.Info{}
 	for _, v := range specs {
-		v(s.root.Info)
+		v(&s.root)
 	}
 	s.root.OpenAPI = "3.0.0"
 	return &s

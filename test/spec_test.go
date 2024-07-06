@@ -4,17 +4,16 @@ import (
 	"net/http"
 	"r5t/api"
 	"r5t/model"
-	"r5t/req"
 	"r5t/spec"
 	"testing"
 	"text/template"
 )
 
 func TestSpecGen(t *testing.T) {
-	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
+	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"), spec.WithServer("http://409.ink", "a example ink"), spec.WithContact("water", "test@test.com", "409.ink"))
 	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
-	t.Log(re)
+	t.Log(string(re))
 }
 
 func TestSpecOfSwaggerUI(t *testing.T) {
@@ -50,11 +49,11 @@ func serveJSON(w http.ResponseWriter, r *http.Request) {
 		One string
 		Two string
 	}
-	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Get("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).
-		Request(model.ModelOf[TestModel](), req.WithJSON(true, "一段说明"))
-	s.Post("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
-	s.Delete("test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"), spec.WithServer("http://409.ink", "a example ink"), spec.WithContact("water", "test@test.com", "409.ink"))
+	s.Get("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"})).
+		ReqJSON(model.ModelOf[TestModel]())
+	s.Post("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
+	s.Delete("/test-gkd", api.WithDesc("A test api item, get function"), api.WithSummary("hi!"), api.WithTags([]string{"k1"}))
 	re, _ := s.MarshalJSON()
 	w.Write(re)
 }
