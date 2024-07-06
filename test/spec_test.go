@@ -1,28 +1,30 @@
-package spec
+package test
 
 import (
 	"net/http"
 	"r5t/api"
+	"r5t/model"
+	"r5t/spec"
 	"testing"
 	"text/template"
 )
 
 func TestSpecGen(t *testing.T) {
-	s := NewSpec(WithSpecTitle("test page"), WithSpecVersion("0.0.1"))
+	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
 	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	s.GenerateDoc()
-	re, _ := s.root.MarshalJSON()
+	re, _ := s.MarshalJSON()
 	t.Log(re)
 }
 
 func TestSpecOfSwaggerUI(t *testing.T) {
+	// serveHTML 是处理函数
+
 	// create http server
 	http.HandleFunc("/", serveHTML)
 	http.HandleFunc("/test.json", serveJSON)
 	http.ListenAndServe(":8000", nil)
 }
 
-// serveHTML 是处理函数
 func serveHTML(w http.ResponseWriter, r *http.Request) {
 	// 定义要传递给模板的数据
 
@@ -43,11 +45,14 @@ func serveHTML(w http.ResponseWriter, r *http.Request) {
 
 // serveHTML 是处理函数
 func serveJSON(w http.ResponseWriter, r *http.Request) {
-	s := NewSpec(WithSpecTitle("test page"), WithSpecVersion("0.0.1"))
-	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
+	type TestModel struct {
+		One string
+		Two string
+	}
+	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
+	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).Request(model.ModelOf[TestModel](), model.WithReqJSON(true, "一段说明"))
 	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
 	s.Delete("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	s.GenerateDoc()
-	re, _ := s.root.MarshalJSON()
+	re, _ := s.MarshalJSON()
 	w.Write(re)
 }

@@ -1,7 +1,6 @@
 package spec
 
 import (
-	"log"
 	"r5t/api"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -10,21 +9,16 @@ import (
 type spec struct {
 	// some info, do not have apis
 	root openapi3.T
-	apis []*api.API
 }
 
-func (s *spec) GenerateDoc() {
-	// s.root.Paths = new(openapi3.Paths)
-	log.Println("一共有多少API:", len(s.apis))
-	for _, v := range s.apis {
-		s.root.AddOperation(v.Path, v.Method, v.PathItem.Options)
-	}
+func (s *spec) MarshalJSON() ([]byte, error) {
+	return s.root.MarshalJSON()
 }
 
 type SpecOpts func(s *openapi3.Info)
 
 // contact
-func WithSpecContact(name string, mail string, url string) SpecOpts {
+func WithContact(name string, mail string, url string) SpecOpts {
 	return func(s *openapi3.Info) {
 		s.Contact = &openapi3.Contact{
 			Name:  name,
@@ -35,14 +29,14 @@ func WithSpecContact(name string, mail string, url string) SpecOpts {
 }
 
 // title
-func WithSpecTitle(title string) SpecOpts {
+func WithTitle(title string) SpecOpts {
 	return func(s *openapi3.Info) {
 		s.Title = title
 	}
 }
 
 // version
-func WithSpecVersion(v string) SpecOpts {
+func WithVersion(v string) SpecOpts {
 	return func(s *openapi3.Info) {
 		s.Version = v
 	}
@@ -61,14 +55,10 @@ func NewSpec(specs ...SpecOpts) *spec {
 
 func (s *spec) addNewApi(path string, method string, opts []api.PathOpts) *api.API {
 	var newApi *api.API = &api.API{
-		PathItem: &openapi3.PathItem{
-			Options: &openapi3.Operation{},
-		},
-		Method: method,
-		Path:   path,
+		Operation: &openapi3.Operation{},
 	}
-	s.apis = append(s.apis, newApi)
-	newApi.DealPathItem(newApi.PathItem.Options, opts)
+	s.root.AddOperation(path, method, newApi.Operation)
+	newApi.DealPathItem(newApi.Operation, opts)
 	return newApi
 }
 
