@@ -22,7 +22,7 @@ func TestSpecOfSwaggerUI(t *testing.T) {
 
 	// create http server
 	http.HandleFunc("/", serveHTML)
-	http.HandleFunc("/test.json", serveJSON)
+	http.HandleFunc("/test.json", serveAuthTest)
 	http.ListenAndServe(":8000", nil)
 }
 

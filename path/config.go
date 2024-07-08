@@ -23,8 +23,13 @@ func WithTags(tags []string) PathOpts {
 	}
 }
 
-func WithSecurity() PathOpts {
+func WithSecurity(tokenName string, auth []string) PathOpts {
 	return func(s *openapi3.Operation) {
-		// s.Description = desc
+		if s.Security == nil {
+			s.Security = openapi3.NewSecurityRequirements()
+		}
+		*s.Security = append(*s.Security, openapi3.SecurityRequirement{
+			tokenName: auth,
+		})
 	}
 }
