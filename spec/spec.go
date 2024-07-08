@@ -2,6 +2,7 @@ package spec
 
 import (
 	"r5t/api"
+	"r5t/model"
 	"r5t/path"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -58,6 +59,9 @@ func NewSpec(specs ...SpecOpts) *spec {
 	var s spec
 	s.root = openapi3.T{
 		Info: &openapi3.Info{},
+		Components: &openapi3.Components{
+			Schemas: make(openapi3.Schemas),
+		},
 	}
 	s.root.Info = &openapi3.Info{}
 	for _, v := range specs {
@@ -70,6 +74,7 @@ func NewSpec(specs ...SpecOpts) *spec {
 func (s *spec) addNewApi(path string, method string, opts []path.PathOpts) *api.API {
 	var newApi *api.API = &api.API{
 		Operation: &openapi3.Operation{},
+		Schemas:   &s.root.Components.Schemas,
 	}
 	s.root.AddOperation(path, method, newApi.Operation)
 	newApi.DealPathItem(newApi.Operation, opts)
@@ -92,4 +97,18 @@ func (s *spec) Delete(path string, opts ...path.PathOpts) *api.API {
 func (s *spec) Put(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "PUT", opts)
+}
+
+// registerModel dev
+func (s *spec) RegisterModel(m model.Model, opts ...model.ModelOpts) *spec {
+
+	schema := new(openapi3.Schema)
+	model.ParseModel(m.Type, schema)
+	for _, v := range opts {
+		v(schema)
+	}
+	s.root.Components.Schemas[m.Type.Name()] = &openapi3.SchemaRef{
+		Value: schema,
+	}
+	return s
 }

@@ -16,11 +16,12 @@ func WithForm(required bool, description string) ResModelOpts {
 		s.Content[ReqJSON] = nil
 	}
 }
-func WithJSON(required bool, description string) ResModelOpts {
+
+/* func WithJSON(required bool, description string) ResModelOpts {
 	return func(s *openapi3.Response) {
 		s.Content[ReqJSON] = nil
 	}
-}
+} */
 
 func WithHeader() ResModelOpts {
 	return func(s *openapi3.Response) {

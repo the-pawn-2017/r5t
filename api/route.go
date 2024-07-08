@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"r5t/header"
 	"r5t/model"
 	"r5t/param"
@@ -15,6 +14,7 @@ import (
 type API struct {
 	// PathItem *openapi3.PathItem
 	Operation *openapi3.Operation
+	Schemas   *openapi3.Schemas
 }
 
 // deal all
@@ -74,33 +74,30 @@ func (api *API) ReqJSON(m model.Model, opts ...req.ReqModelOpts) *API {
 		v(api.Operation.RequestBody.Value)
 
 	}
-	model.ParseModel(m.Type, jsonContent[header.ApplicationJson].Schema.Value)
+	if (*api.Schemas)[m.Type.Name()] == nil {
+		model.ParseModel(m.Type, jsonContent[header.ApplicationJson].Schema.Value)
+	} else {
+		api.Operation.RequestBody.Ref = "#/components/schemas/" + m.Type.Name()
+	}
+
 	return api
 }
 
-func (api *API) Response(code int, m model.Model, opts ...res.ResModelOpts) *API {
+func (api *API) ResJSON(code int, m model.Model, opts ...res.ResModelOpts) *API {
 	resbody := &openapi3.Response{
-		Content: make(openapi3.Content),
+		Content: openapi3.NewContentWithJSONSchema(&openapi3.Schema{}),
 	}
 	for _, v := range opts {
 		v(resbody)
 	}
-	for k := range resbody.Content {
-		if k == res.ReqJSON {
-			log.Println("我进来了")
-			schema := new(openapi3.Schema)
-			model.ParseModel(m.Type, schema)
-			item := &openapi3.MediaType{
-				Schema: &openapi3.SchemaRef{
-					Value: nil,
-				},
-			}
-			item.Schema.Value = schema
-			log.Println(item.Schema.Value)
-			resbody.Content[k] = item
-		}
+	if (*api.Schemas)[m.Type.Name()] == nil {
+		model.ParseModel(m.Type, resbody.Content[header.ApplicationJson].Schema.Value)
+	} else {
+		resbody.WithJSONSchemaRef(&openapi3.SchemaRef{
+			Ref: "#/components/schemas/" + m.Type.Name(),
+		})
+		//resbody.Content[header.ApplicationJson].Schema.Ref = "#/components/schemas/" + m.Type.Name()
 	}
-
 	api.Operation.AddResponse(code, resbody)
 	return api
 }
@@ -134,9 +131,4 @@ func (api *API) ParamHeader(name string, opts ...param.ReqParamOpts) *API {
 }
 func (api *API) ParamQuery(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InQuery, opts)
-}
-
-// registerModel dev
-func (api *API) RegisterModel(model *model.Model, opts ...model.ModelOpts) {
-	model.Options = opts
 }

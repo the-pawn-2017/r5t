@@ -55,6 +55,8 @@ func serveJSON(w http.ResponseWriter, r *http.Request) {
 		ReqJSON(model.ModelOf[TestModel]())
 	s.Post("/test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"}))
 	s.Delete("/test-gkd", path.WithDesc("A test api item, get function"), path.WithSummary("hi!"), path.WithTags([]string{"k1"}))
+	s.RegisterModel(model.ModelOf[TestModel]()).Get("gkd").ReqJSON(model.ModelOf[TestModel]()).ResJSON(http.StatusOK, model.ModelOf[TestModel]())
+
 	re, _ := s.MarshalJSON()
 	w.Write(re)
 }
