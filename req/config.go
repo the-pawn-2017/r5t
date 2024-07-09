@@ -33,3 +33,14 @@ func WithDesc(description string) ReqModelOpts {
 		s.Description = description
 	}
 }
+
+func WithExample[T any](example T) ReqModelOpts {
+	return func(s *openapi3.RequestBody) {
+		for _, v := range s.Content {
+			if v != nil {
+				v.Example = example
+			}
+
+		}
+	}
+}

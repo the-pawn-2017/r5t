@@ -47,6 +47,10 @@ func WithOAuth2Implicit(tokenName string, authorizationUrl string, scopes map[st
 		return tokenName
 	}
 }
+
+/*
+	scopes: map[value]some info
+*/
 func WithOAuth2Code(tokenName string, authorizationUrl string, token string, scopes map[string]string) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "oauth2"

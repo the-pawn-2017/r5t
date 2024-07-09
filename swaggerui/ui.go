@@ -3,7 +3,6 @@ package swaggerui
 import (
 	"embed"
 	"errors"
-	"fmt"
 	"io"
 	"io/fs"
 	"log"
@@ -27,7 +26,6 @@ func GenSwaggerUI(swaggerJSONUrl string) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Extract the requested path from the URL.
 		requestedPath := c.Param("*")
-		fmt.Println(requestedPath, "!!!!!")
 		// Open the requested file from the embedded filesystem.
 		file, err := dist.Open("dist/" + requestedPath)
 		if err != nil {
@@ -38,12 +36,6 @@ func GenSwaggerUI(swaggerJSONUrl string) echo.HandlerFunc {
 		}
 		defer file.Close()
 
-		// Get the file info to determine its content type.
-		info, err := file.Stat()
-		if err != nil {
-			return err
-		}
-
 		// Read the file contents.
 		content, err := io.ReadAll(file)
 		if err != nil {
@@ -52,7 +44,6 @@ func GenSwaggerUI(swaggerJSONUrl string) echo.HandlerFunc {
 		if requestedPath == "swagger-initializer.js" {
 			content = []byte(strings.ReplaceAll(string(content), "./swagger.json", swaggerJSONUrl))
 		}
-		log.Println(info.Mode())
 		sRe := strings.Split(requestedPath, ".")
 
 		var fileKind string

@@ -120,6 +120,16 @@ func (api *API) dealParam(name string, in string, opts []param.ReqParamOpts) *AP
 	return api
 }
 
+func (api *API) NeedSecurify(tokenName string, require []string) *API {
+	if api.Operation.Security == nil {
+		api.Operation.Security = new(openapi3.SecurityRequirements)
+	}
+	*api.Operation.Security = append(*api.Operation.Security, openapi3.SecurityRequirement{
+		tokenName: require,
+	})
+	return api
+}
+
 func (api *API) ParamPath(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InPath, opts)
 }
