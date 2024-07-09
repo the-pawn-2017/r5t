@@ -1,6 +1,10 @@
 package res
 
-import "github.com/getkin/kin-openapi/openapi3"
+import (
+	"r5t/header"
+
+	"github.com/getkin/kin-openapi/openapi3"
+)
 
 type ResModelOpts func(s *openapi3.Response)
 
@@ -25,5 +29,11 @@ func WithForm(required bool, description string) ResModelOpts {
 
 func WithHeader() ResModelOpts {
 	return func(s *openapi3.Response) {
+	}
+}
+
+func WithExample(e any) ResModelOpts {
+	return func(s *openapi3.Response) {
+		s.Content[header.ApplicationJson].Example = e
 	}
 }

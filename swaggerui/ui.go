@@ -1,18 +1,21 @@
 package swaggerui
 
 import (
+	"embed"
 	"errors"
 	"fmt"
 	"io"
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"r5t/spec"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 )
+
+//go:embed dist/*
+var dist embed.FS
 
 func GenSpec(spec *spec.Spec) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -26,7 +29,7 @@ func GenSwaggerUI(swaggerJSONUrl string) echo.HandlerFunc {
 		requestedPath := c.Param("*")
 		fmt.Println(requestedPath, "!!!!!")
 		// Open the requested file from the embedded filesystem.
-		file, err := os.Open("../../swaggerui/dist/" + requestedPath)
+		file, err := dist.Open("dist/" + requestedPath)
 		if err != nil {
 			if errors.Is(err, fs.ErrNotExist) { // 注意这里使用errors.Is()和fs.ErrNotExist
 				log.Println("文件未找到")
@@ -49,8 +52,20 @@ func GenSwaggerUI(swaggerJSONUrl string) echo.HandlerFunc {
 		if requestedPath == "swagger-initializer.js" {
 			content = []byte(strings.ReplaceAll(string(content), "./swagger.json", swaggerJSONUrl))
 		}
+		log.Println(info.Mode())
+		sRe := strings.Split(requestedPath, ".")
 
-		// Return the file contents with the correct content type.
-		return c.Blob(http.StatusOK, info.Mode().String(), content)
+		var fileKind string
+		switch sRe[len(sRe)-1] {
+		case "css":
+			fileKind = "text/css"
+		case "html":
+			fileKind = "text/html"
+		case "js":
+			fileKind = "application/x-javascript"
+		case "png":
+			fileKind = "image/png"
+		}
+		return c.Blob(http.StatusOK, fileKind, content)
 	}
 }

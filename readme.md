@@ -13,10 +13,10 @@ v0.0.2
 - [ ] all components example and limit
 - [x] param config, but no example and limit
 - [x] res&req model,now,it can use json, others type in developing.
-- [ ] OAuth2 model
-- [ ] register model
+- [x] OAuth2 model, only code and implicit
+- [x] register model
 - [ ] complete test
-- [ ] gin &echo support
+- [ ] gin &echo support, now, echo can use r5t by some function, it's in `example/echo`
 ... need more
 
 ## example:
