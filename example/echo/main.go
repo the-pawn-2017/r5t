@@ -24,7 +24,9 @@ func main() {
 	s := spec.NewSpec()
 	s.Security(security.WithOAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token", map[string]string{
 		"openid": "OPENID IS USING FOR ID",
-	})).Post("/gkd").NeedSecurify("ziteal", []string{"openid"}).ReqJSON(model.ModelOf[TestBasic](), req.WithExample(TestBasic{A: "A", B: "B"})).ResJSON(http.StatusOK, model.ModelOf[TestBasic](), res.WithExample(TestBasic{A: "A", B: "B"}))
+	})).Post("/gkd").NeedSecurify("ziteal", []string{"openid"}).
+		ReqJSON(model.ModelOf[TestBasic](), req.WithExample(TestBasic{A: "A", B: "B"})).
+		ResJSON(http.StatusOK, model.ModelOf[TestBasic](), res.WithExample(TestBasic{A: "A", B: "B"}))
 	e.GET("/swagger-test.json", swaggerui.GenSpec(s))
 	e.GET("/swagger/*", swaggerui.GenSwaggerUI("/swagger-test.json"))
 	e.Start(":2333")
