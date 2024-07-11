@@ -1,6 +1,6 @@
 # r5t
 
-> inspired by [a-h/rest](https://github.com/a-h/rest), and some code using the repo.
+> inspired by [a-h/rest](https://github.com/a-h/rest), testing code using `a-h/rest`
 
 **DON'T TRY TO USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
 
@@ -8,55 +8,35 @@
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.0.2
+v0.0.3
 ## todo
 - [ ] all components example and limit
 - [x] param config, but no example and limit
-- [x] res&req model,now,it can use json, others type in developing.
-- [x] OAuth2 model, only code and implicit
+- [x] Registering res&req model,now,it can use json,form, others type in developing.
+- [x] Supporting OAuth2 , only code and implicit
 - [x] register model
 - [ ] complete test
-- [ ] gin &echo support, now, echo can use r5t by some function, it's in `example/echo`
+- [ ] gin &echo support, now, echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
+
 ... need more
 
 ## example:
 go `/test/spec_test` view some example
 ```golang
-	func serveJSON(w http.ResponseWriter, r *http.Request) {
-	type TestModel struct {
-		One string
-		Two string
-	}
-	s := spec.NewSpec(spec.WithTitle("test page"), spec.WithVersion("0.0.1"))
-	s.Get("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"})).Request(model.ModelOf[TestModel](), model.WithReqJSON(true, "一段说明"))
-	s.Post("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	s.Delete("test-gkd", api.WithPathDesc("A test api item, get function"), api.WithPathSummary("hi!"), api.WithPathTags([]string{"k1"}))
-	re, _ := s.MarshalJSON()
-	w.Write(re)
-}
-func serveHTML(w http.ResponseWriter, r *http.Request) {
-	// 定义要传递给模板的数据
-
-	// 加载 HTML 模板文件
-	tmpl, err := template.ParseFiles("../swaggerui/index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// 使用数据渲染 HTML 模板并写入响应
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-func TestSpecOfSwaggerUI(t *testing.T) {
-	// serveHTML 是处理函数
-
-	// create http server
-	http.HandleFunc("/", serveHTML)
-	http.HandleFunc("/test.json", serveJSON)
-	http.ListenAndServe(":8000", nil)
+type Test struct {
+	A string
+	B string `validate:"required"`
 }
 ```
+```golang
+	s := spec.NewSpec()
+	s.Security(
+		security.WithOAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token",
+			security.AddScope("openid", "OPENID IS USING FOR ID")),
+	).
+		Post("/gkd").NeedSecurify("ziteal", []string{"openid"}).
+		ReqJSON(model.ModelOf[Test](), req.WithExample(Test{A: "A", B: "B"})).
+		ResJSON(http.StatusOK, model.ModelOf[Test](), res.WithExample(Test{A: "A", B: "B"}))
+```
+## tools 
+[swagger-ui-edit](https://editor-next.swagger.io/)

@@ -1,0 +1,26 @@
+openapi: 3.0.0
+components: {}
+info:
+  title: ""
+  version: ""
+paths:
+  /test:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                A:
+                  type: string
+                B:
+                  type: string
+                GKD.txt:
+                  format: bin
+                  type: string
+              required:
+              - GKD.txt
+              type: object
+      responses:
+        default:
+          description: ""

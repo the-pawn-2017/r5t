@@ -7,6 +7,7 @@ import (
 	"r5t/security"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"gopkg.in/yaml.v3"
 )
 
 type Spec struct {
@@ -16,6 +17,12 @@ type Spec struct {
 
 func (s *Spec) MarshalJSON() ([]byte, error) {
 	return s.root.MarshalJSON()
+}
+func (s *Spec) MarshalYAML() ([]byte, error) {
+	return yaml.Marshal(s.root)
+}
+func (s *Spec) UnMarshalYAML(src []byte) error {
+	return yaml.Unmarshal(src, &s.root)
 }
 
 type SpecOpts func(s *openapi3.T)
@@ -73,6 +80,11 @@ func NewSpec(specs ...SpecOpts) *Spec {
 	return &s
 }
 
+// export
+func (s *Spec) ExportData() *openapi3.T {
+	return &s.root
+}
+
 func (s *Spec) addNewApi(path string, method string, opts []path.PathOpts) *api.API {
 	var newApi *api.API = &api.API{
 		Operation: &openapi3.Operation{},
@@ -80,6 +92,7 @@ func (s *Spec) addNewApi(path string, method string, opts []path.PathOpts) *api.
 	}
 	s.root.AddOperation(path, method, newApi.Operation)
 	newApi.DealPathItem(newApi.Operation, opts)
+	newApi.Operation.Responses = openapi3.NewResponses()
 	return newApi
 }
 
@@ -99,6 +112,25 @@ func (s *Spec) Delete(path string, opts ...path.PathOpts) *api.API {
 func (s *Spec) Put(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "PUT", opts)
+}
+func (s *Spec) Connect(path string, opts ...path.PathOpts) *api.API {
+
+	return s.addNewApi(path, "CONNECT", opts)
+}
+func (s *Spec) Options(path string, opts ...path.PathOpts) *api.API {
+
+	return s.addNewApi(path, "OPTIONS", opts)
+}
+func (s *Spec) Patch(path string, opts ...path.PathOpts) *api.API {
+
+	return s.addNewApi(path, "PATCH", opts)
+}
+func (s *Spec) Trace(path string, opts ...path.PathOpts) *api.API {
+
+	return s.addNewApi(path, "TRACE", opts)
+}
+func (s *Spec) Head(path string, opts ...path.PathOpts) *api.API {
+	return s.addNewApi(path, "HEAD", opts)
 }
 
 // registerModel

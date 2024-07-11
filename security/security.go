@@ -35,31 +35,45 @@ const PasswordFlow = "password"
 const ClientCredentialsFlow = "clientCredentials"
 const AuthorizationCodeFlow = "authorizationCode"
 
-func WithOAuth2Implicit(tokenName string, authorizationUrl string, scopes map[string]string) SecurityModelOpts {
+func WithOAuth2Implicit(tokenName string, authorizationUrl string, opts ...scopesOpts) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "oauth2"
 		ss.Flows = &openapi3.OAuthFlows{
 			Implicit: &openapi3.OAuthFlow{
 				AuthorizationURL: authorizationUrl,
-				Scopes:           scopes,
+				Scopes:           make(map[string]string),
 			},
 		}
+		for _, v := range opts {
+			v(&ss.Flows.AuthorizationCode.Scopes)
+		}
 		return tokenName
+	}
+}
+
+type scopesOpts func(*map[string]string)
+
+func AddScope(name string, desc string) scopesOpts {
+	return func(scopes *map[string]string) {
+		(*scopes)[name] = desc
 	}
 }
 
 /*
 	scopes: map[value]some info
 */
-func WithOAuth2Code(tokenName string, authorizationUrl string, token string, scopes map[string]string) SecurityModelOpts {
+func WithOAuth2Code(tokenName string, authorizationUrl string, token string, opts ...scopesOpts) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "oauth2"
 		ss.Flows = &openapi3.OAuthFlows{
 			AuthorizationCode: &openapi3.OAuthFlow{
 				AuthorizationURL: authorizationUrl,
 				TokenURL:         token,
-				Scopes:           scopes,
+				Scopes:           make(map[string]string),
 			},
+		}
+		for _, v := range opts {
+			v(&ss.Flows.AuthorizationCode.Scopes)
 		}
 		return tokenName
 	}
