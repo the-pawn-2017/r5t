@@ -87,12 +87,14 @@ func (s *Spec) ExportData() *openapi3.T {
 
 func (s *Spec) addNewApi(path string, method string, opts []path.PathOpts) *api.API {
 	var newApi *api.API = &api.API{
-		Operation: &openapi3.Operation{},
-		Schemas:   &s.root.Components.Schemas,
+		Operation: &openapi3.Operation{
+			Description: "",
+		},
+		Schemas: &s.root.Components.Schemas,
 	}
 	s.root.AddOperation(path, method, newApi.Operation)
 	newApi.DealPathItem(newApi.Operation, opts)
-	newApi.Operation.Responses = openapi3.NewResponses()
+	newApi.Operation.Responses = &openapi3.Responses{}
 	return newApi
 }
 
@@ -112,10 +114,6 @@ func (s *Spec) Delete(path string, opts ...path.PathOpts) *api.API {
 func (s *Spec) Put(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "PUT", opts)
-}
-func (s *Spec) Connect(path string, opts ...path.PathOpts) *api.API {
-
-	return s.addNewApi(path, "CONNECT", opts)
 }
 func (s *Spec) Options(path string, opts ...path.PathOpts) *api.API {
 

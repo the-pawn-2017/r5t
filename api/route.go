@@ -124,7 +124,9 @@ func (api *API) ReqFormWithFile(m model.Model, opts ...req.ReqModelOpts) *API {
 
 func (api *API) ResJSON(code int, m model.Model, opts ...res.ResModelOpts) *API {
 	resbody := &openapi3.Response{
-		Content: openapi3.NewContentWithJSONSchema(&openapi3.Schema{}),
+		Content: openapi3.NewContentWithJSONSchema(&openapi3.Schema{
+			Description: "",
+		}),
 	}
 	for _, v := range opts {
 		v(resbody)

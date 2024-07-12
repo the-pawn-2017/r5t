@@ -13,27 +13,8 @@ import (
 	"github.com/r3labs/diff/v3"
 )
 
-func TestExportYaml(t *testing.T) {
-	type TestStruct struct {
-		A string
-		B string
-	}
-	s := spec.NewSpec()
-	s.Post("/test").ReqFormWithFile(model.ModelOf[TestStruct](), req.WithFormFile("GKD.txt", "I need a text file", true))
-	re, _ := s.MarshalYAML()
-	log.Println(string(re))
-}
-
-func TestLoadYAML(t *testing.T) {
-	content, _ := os.ReadFile("./specs/form-file.yaml")
-	expectedSpec, err := openapi3.NewLoader().LoadFromData(content)
-	log.Println(err, "load err")
-	log.Println(expectedSpec.Paths, expectedSpec.Info)
-
-}
-
 // still need to test, I will design some function to test the repo.
-func AllMethodsTest(t *testing.T) {
+func TestAllMethods(t *testing.T) {
 	// path := "all-methods.yaml"
 	//b, _ := os.ReadFile("./specs" + path)
 	type O struct {
@@ -41,7 +22,6 @@ func AllMethodsTest(t *testing.T) {
 	}
 
 	s := spec.NewSpec(spec.WithTitle("all-methods.yaml"), spec.WithVersion("0.0.0")).RegisterModel(model.ModelOf[O]())
-	s.Connect("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Delete("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Get("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Head("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
@@ -50,7 +30,8 @@ func AllMethodsTest(t *testing.T) {
 	s.Post("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Put("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Trace("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
-	s.MarshalJSON()
+	genDiff(s, "./specs/"+"001-all-methods.yaml", t)
+
 }
 
 func TestFormFile(t *testing.T) {
@@ -60,12 +41,30 @@ func TestFormFile(t *testing.T) {
 	}
 	s := spec.NewSpec()
 	s.Post("/test").ReqFormWithFile(model.ModelOf[TestStruct](), req.WithFormFile("GKD.txt", "I need a text file", true))
-	content, _ := os.ReadFile("./specs/form-file.yaml")
-	expectedSpec, _ := openapi3.NewLoader().LoadFromData(content)
+	genDiff(s, "./specs/"+"000-form-file.yaml", t)
+}
 
-	if re, err := diff.Diff(expectedSpec, s.ExportData()); len(re) > 0 && err == nil {
-		t.Error(re)
-	} else if err != nil {
-		t.FailNow()
+func genDiff(spec1 *spec.Spec, fileName string, t *testing.T) {
+	d, _ := os.Getwd()
+	log.Println(d)
+	content, fileErr := os.ReadFile(fileName)
+	if fileErr != nil {
+		// t.Log(fileErr)
+		t.Fatal(fileErr)
+		return
+	}
+	specFromFile, parseErr := openapi3.NewLoader().LoadFromData(content)
+	if parseErr != nil {
+		// t.Log(parseErr)
+		t.Fatal(parseErr)
+		return
+	}
+
+	if re, err := diff.Diff(specFromFile, spec1.ExportData()); len(re) > 0 && err == nil {
+		// t.Log(re)
+		t.Fatal(re)
+		return
+	} else if err != nil && len(re) == 0 {
+		t.Fatal(err)
 	}
 }
