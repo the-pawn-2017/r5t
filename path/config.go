@@ -17,9 +17,12 @@ func WithSummary(desc string) PathOpts {
 	}
 }
 
-func WithTags(tags []string) PathOpts {
+func WithTags(tags ...string) PathOpts {
 	return func(s *openapi3.Operation) {
-		s.Tags = tags
+		if s.Tags == nil {
+			s.Tags = make([]string, 0)
+		}
+		s.Tags = append(s.Tags, tags...)
 	}
 }
 
