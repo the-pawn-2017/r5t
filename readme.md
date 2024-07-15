@@ -10,7 +10,7 @@
 ## version
 v0.0.3
 ## todo
-- [ ] all components example and limit
+- [x] all components support and limit
 - [x] param config, but no example and limit
 - [x] Registering res&req model,now,it can use json,form, others type in developing.
 - [x] Supporting OAuth2 , only code and implicit

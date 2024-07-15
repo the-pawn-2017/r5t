@@ -4,10 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"r5t/model"
-	"r5t/req"
-	"r5t/spec"
 	"testing"
+
+	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/req"
+	"github.com/the-pawn-2017/r5t/spec"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/r3labs/diff/v3"

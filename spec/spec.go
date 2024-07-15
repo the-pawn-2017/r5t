@@ -1,10 +1,10 @@
 package spec
 
 import (
-	"r5t/api"
-	"r5t/model"
-	"r5t/path"
-	"r5t/security"
+	"github.com/the-pawn-2017/r5t/api"
+	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/path"
+	"github.com/the-pawn-2017/r5t/security"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"gopkg.in/yaml.v3"

@@ -1,7 +1,7 @@
 package req
 
 import (
-	"r5t/header"
+	"github.com/the-pawn-2017/r5t/header"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )

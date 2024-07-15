@@ -1,4 +1,4 @@
-module r5t
+module github.com/the-pawn-2017/r5t
 
 go 1.22.2
 

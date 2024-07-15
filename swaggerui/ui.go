@@ -5,8 +5,9 @@ import (
 	"errors"
 	"io"
 	"io/fs"
-	"r5t/spec"
 	"strings"
+
+	"github.com/the-pawn-2017/r5t/spec"
 )
 
 //go:embed dist/*

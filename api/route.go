@@ -1,12 +1,12 @@
 package api
 
 import (
-	"r5t/header"
-	"r5t/model"
-	"r5t/param"
-	"r5t/path"
-	"r5t/req"
-	"r5t/res"
+	"github.com/the-pawn-2017/r5t/header"
+	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/param"
+	"github.com/the-pawn-2017/r5t/path"
+	"github.com/the-pawn-2017/r5t/req"
+	"github.com/the-pawn-2017/r5t/res"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
