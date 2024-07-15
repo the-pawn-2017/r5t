@@ -19,7 +19,8 @@ func TestAllMethods(t *testing.T) {
 	// path := "all-methods.yaml"
 	//b, _ := os.ReadFile("./specs" + path)
 	type O struct {
-		Ok bool `json:"OK"`
+		Ok  bool `json:"OK"`
+		Ok2 bool `json:"-"`
 	}
 
 	s := spec.NewSpec(spec.WithTitle("all-methods.yaml"), spec.WithVersion("0.0.0")).RegisterModel(model.ModelOf[O]())
@@ -36,9 +37,13 @@ func TestAllMethods(t *testing.T) {
 }
 
 func TestFormFile(t *testing.T) {
+	type embedStruct struct {
+		C string
+	}
 	type TestStruct struct {
-		A string
-		B string
+		A           string
+		B           string
+		embedStruct `json:"-"`
 	}
 	s := spec.NewSpec()
 	s.Post("/test").ReqFormWithFile(model.ModelOf[TestStruct](), req.WithFormFile("GKD.txt", "I need a text file", true))

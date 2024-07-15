@@ -35,15 +35,18 @@ func ParseModel(t reflect.Type, s *openapi3.Schema) {
 			if t.Field(i).PkgPath != "" {
 				continue
 			}
+			jsonTag, hasCustomName := t.Field(i).Tag.Lookup("json")
 			// embed struct
-			if t.Field(i).Anonymous {
+			if t.Field(i).Anonymous && jsonTag != "-" {
 				ParseModel(t.Field(i).Type, s)
 				continue
 			}
-			tag, hasCustomName := t.Field(i).Tag.Lookup("json")
+			if jsonTag == "-" {
+				continue
+			}
 			var realName string
 			if hasCustomName {
-				realName = tag
+				realName = jsonTag
 			} else {
 				realName = t.Field(i).Name
 			}
