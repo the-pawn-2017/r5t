@@ -12,20 +12,31 @@ const (
 	InCookie = "cookie"
 )
 
-func WithExample(value string) ReqParamOpts {
+func Example(value string) ReqParamOpts {
 	return func(p *openapi3.Parameter) {
 		p.Example = value
 	}
 }
 
-func WithDesc(value string) ReqParamOpts {
+func Desc(value string) ReqParamOpts {
 	return func(p *openapi3.Parameter) {
 		p.Description = value
 	}
 }
 
-func WithRequired() ReqParamOpts {
+func Required() ReqParamOpts {
 	return func(p *openapi3.Parameter) {
 		p.Required = true
+	}
+}
+func Default[T string | bool | int | float64](v T) ReqParamOpts {
+	return func(p *openapi3.Parameter) {
+		p.Schema = &openapi3.SchemaRef{
+			Value: &openapi3.Schema{
+				Default: nil,
+			},
+		}
+		p.Schema.Value.Default = v
+
 	}
 }

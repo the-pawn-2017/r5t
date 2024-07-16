@@ -7,13 +7,13 @@ import (
 	"io/fs"
 	"strings"
 
-	"github.com/the-pawn-2017/r5t/spec"
+	"github.com/the-pawn-2017/r5t"
 )
 
 //go:embed dist/*
 var dist embed.FS
 
-func GenSpec(spec *spec.Spec) ([]byte, error) {
+func GenSpec(spec *r5t.Spec) ([]byte, error) {
 	return spec.MarshalJSON()
 }
 func GetSwaggerUIFile(swaggerJSONUrl string, fileName string) (string, []byte, error) {

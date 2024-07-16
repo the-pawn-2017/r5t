@@ -4,20 +4,20 @@ import "github.com/getkin/kin-openapi/openapi3"
 
 type PathOpts func(s *openapi3.Operation)
 
-func WithDesc(desc string) PathOpts {
+func Desc(desc string) PathOpts {
 	return func(s *openapi3.Operation) {
 		s.Description = desc
 
 	}
 }
 
-func WithSummary(desc string) PathOpts {
+func Summary(desc string) PathOpts {
 	return func(s *openapi3.Operation) {
 		s.Description = desc
 	}
 }
 
-func WithTags(tags ...string) PathOpts {
+func Tags(tags ...string) PathOpts {
 	return func(s *openapi3.Operation) {
 		if s.Tags == nil {
 			s.Tags = make([]string, 0)
@@ -26,7 +26,7 @@ func WithTags(tags ...string) PathOpts {
 	}
 }
 
-func WithSecurity(tokenName string, auth []string) PathOpts {
+func Security(tokenName string, auth []string) PathOpts {
 	return func(s *openapi3.Operation) {
 		if s.Security == nil {
 			s.Security = openapi3.NewSecurityRequirements()

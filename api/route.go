@@ -171,15 +171,22 @@ func (api *API) NeedSecurify(tokenName string, require []string) *API {
 	return api
 }
 
-func (api *API) ParamPath(name string, opts ...param.ReqParamOpts) *API {
+func (api *API) Path(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InPath, opts)
 }
-func (api *API) ParamCookie(name string, opts ...param.ReqParamOpts) *API {
+func (api *API) Cookie(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InCookie, opts)
 }
-func (api *API) ParamHeader(name string, opts ...param.ReqParamOpts) *API {
+func (api *API) Header(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InHeader, opts)
 }
-func (api *API) ParamQuery(name string, opts ...param.ReqParamOpts) *API {
+func (api *API) Query(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InQuery, opts)
+}
+
+// page
+func (api *API) PageInQuery(pageName string, defaultPageNum int, pageSizeName string, defaultPageSizeNum int) *API {
+	api.dealParam(pageName, param.InQuery, []param.ReqParamOpts{param.Desc("page index"), param.Default(defaultPageNum)})
+	api.dealParam(pageSizeName, param.InQuery, []param.ReqParamOpts{param.Desc("page size"), param.Default(defaultPageSizeNum)})
+	return api
 }

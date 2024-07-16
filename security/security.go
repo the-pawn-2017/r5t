@@ -4,7 +4,7 @@ import "github.com/getkin/kin-openapi/openapi3"
 
 type SecurityModelOpts func(*openapi3.SecurityScheme) string
 
-func WithHttpBasic(tokenName string) SecurityModelOpts {
+func HttpBasic(tokenName string) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "http"
 		ss.Scheme = "basic"
@@ -12,7 +12,7 @@ func WithHttpBasic(tokenName string) SecurityModelOpts {
 	}
 }
 
-func WithApiKey(tokenName string) SecurityModelOpts {
+func ApiKey(tokenName string) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "apiKey"
 		ss.Scheme = "api_key"
@@ -21,7 +21,7 @@ func WithApiKey(tokenName string) SecurityModelOpts {
 	}
 }
 
-func WithJWT(tokenName string) SecurityModelOpts {
+func JWT(tokenName string) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "apiKey"
 		ss.Scheme = "bearer"
@@ -35,7 +35,7 @@ const PasswordFlow = "password"
 const ClientCredentialsFlow = "clientCredentials"
 const AuthorizationCodeFlow = "authorizationCode"
 
-func WithOAuth2Implicit(tokenName string, authorizationUrl string, opts ...scopesOpts) SecurityModelOpts {
+func OAuth2Implicit(tokenName string, authorizationUrl string, opts ...scopesOpts) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "oauth2"
 		ss.Flows = &openapi3.OAuthFlows{
@@ -62,7 +62,7 @@ func AddScope(name string, desc string) scopesOpts {
 /*
 	scopes: map[value]some info
 */
-func WithOAuth2Code(tokenName string, authorizationUrl string, token string, opts ...scopesOpts) SecurityModelOpts {
+func OAuth2Code(tokenName string, authorizationUrl string, token string, opts ...scopesOpts) SecurityModelOpts {
 	return func(ss *openapi3.SecurityScheme) string {
 		ss.Type = "oauth2"
 		ss.Flows = &openapi3.OAuthFlows{

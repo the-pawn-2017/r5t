@@ -9,7 +9,7 @@ import (
 type ReqModelOpts func(s *openapi3.RequestBody)
 
 // about request
-func WithFormFile(name string, description string, required bool) ReqModelOpts {
+func FormFile(name string, description string, required bool) ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
 		for k, v := range s.Content {
 			switch k {
@@ -52,23 +52,33 @@ func WithJSON(required bool, description string) ReqModelOpts {
 	}
 }
 
-func WithRequired(required bool) ReqModelOpts {
+func Required() ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
 		s.Required = true
 	}
 }
 
-func WithDesc(description string) ReqModelOpts {
+func Desc(description string) ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
 		s.Description = description
 	}
 }
 
-func WithExample[T any](example T) ReqModelOpts {
+func Example[T any](example T) ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
 		for _, v := range s.Content {
 			if v != nil {
 				v.Example = example
+			}
+
+		}
+	}
+}
+func Default[T any](v T) ReqModelOpts {
+	return func(s *openapi3.RequestBody) {
+		for _, v := range s.Content {
+			if v != nil {
+				v.Schema.Value.Default = v
 			}
 
 		}

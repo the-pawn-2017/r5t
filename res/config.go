@@ -15,24 +15,13 @@ const ResXML = "application/xml"
 const ReqForm = "application/xxxxxx"
 
 // about request
-func WithForm(required bool, description string) ResModelOpts {
+func Form(required bool, description string) ResModelOpts {
 	return func(s *openapi3.Response) {
 		s.Content[ReqJSON] = nil
 	}
 }
 
-/* func WithJSON(required bool, description string) ResModelOpts {
-	return func(s *openapi3.Response) {
-		s.Content[ReqJSON] = nil
-	}
-} */
-
-func WithHeader() ResModelOpts {
-	return func(s *openapi3.Response) {
-	}
-}
-
-func WithExample(e any) ResModelOpts {
+func Example(e any) ResModelOpts {
 	return func(s *openapi3.Response) {
 		s.Content[header.ApplicationJson].Example = e
 	}

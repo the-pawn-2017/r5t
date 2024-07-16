@@ -6,7 +6,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/the-pawn-2017/r5t"
 	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/param"
 	"github.com/the-pawn-2017/r5t/req"
 	"github.com/the-pawn-2017/r5t/spec"
 
@@ -23,7 +25,7 @@ func TestAllMethods(t *testing.T) {
 		Ok2 bool `json:"-"`
 	}
 
-	s := spec.NewSpec(spec.WithTitle("all-methods.yaml"), spec.WithVersion("0.0.0")).RegisterModel(model.ModelOf[O]())
+	s := r5t.NewSpec(spec.Title("all-methods.yaml"), spec.Version("0.0.0")).RegisterModel(model.ModelOf[O]())
 	s.Delete("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Get("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Head("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
@@ -45,12 +47,20 @@ func TestFormFile(t *testing.T) {
 		B           string
 		embedStruct `json:"-"`
 	}
-	s := spec.NewSpec()
-	s.Post("/test").ReqFormWithFile(model.ModelOf[TestStruct](), req.WithFormFile("GKD.txt", "I need a text file", true))
+	s := r5t.NewSpec()
+	s.Post("/test").ReqFormWithFile(model.ModelOf[TestStruct](), req.FormFile("GKD.txt", "I need a text file", true))
 	genDiff(s, "./specs/"+"000-form-file.yaml", t)
 }
 
-func genDiff(spec1 *spec.Spec, fileName string, t *testing.T) {
+func TestParam(t *testing.T) {
+	s := r5t.NewSpec(spec.Title("params.yaml"))
+	s.Get("/page").PageInQuery("page", 1, "pageSize", 10)
+	s.Get("/param/{abc}").Path("abc", param.Default(1))
+	re, _ := s.MarshalYAML()
+	log.Println(string(re))
+}
+
+func genDiff(spec1 *r5t.Spec, fileName string, t *testing.T) {
 	d, _ := os.Getwd()
 	log.Println(d)
 	content, fileErr := os.ReadFile(fileName)
