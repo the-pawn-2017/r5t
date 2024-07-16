@@ -2,13 +2,13 @@
 
 > inspired by [a-h/rest](https://github.com/a-h/rest), testing code using `a-h/rest`
 
-**DON'T TRY TO USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
+**CAREFULLY USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
 
 ## why create this repo?
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.0.3
+v0.0.9
 ## todo
 - [x] all components support and limit
 - [x] param config, but no example and limit
@@ -16,7 +16,7 @@ v0.0.3
 - [x] Supporting OAuth2 , only code and implicit
 - [x] register model
 - [ ] complete test
-- [ ] gin &echo support, now, echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
+- [x] Support other web server,now,echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
 
 ... need more
 

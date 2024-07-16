@@ -5,15 +5,15 @@ package main
 
 import (
 	"net/http"
-	"r5t/model"
-	"r5t/req"
-	"r5t/res"
-	"r5t/security"
-	"r5t/spec"
-	"r5t/swaggerui"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/the-pawn-2017/r5t"
+	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/req"
+	"github.com/the-pawn-2017/r5t/res"
+	"github.com/the-pawn-2017/r5t/security"
+	"github.com/the-pawn-2017/r5t/swaggerui"
 )
 
 type TestBasic struct {
@@ -24,14 +24,14 @@ type TestBasic struct {
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	s := spec.NewSpec()
+	s := r5t.NewSpec()
 	s.Security(
-		security.WithOAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token",
+		security.OAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token",
 			security.AddScope("openid", "OPENID IS USING FOR ID")),
 	).
 		Post("/gkd").NeedSecurify("ziteal", []string{"openid"}).
-		ReqJSON(model.ModelOf[TestBasic](), req.WithExample(TestBasic{A: "A", B: "B"})).
-		ResJSON(http.StatusOK, model.ModelOf[TestBasic](), res.WithExample(TestBasic{A: "A", B: "B"}))
+		ReqJSON(model.ModelOf[TestBasic](), req.Example(TestBasic{A: "A", B: "B"})).
+		ResJSON(http.StatusOK, model.ModelOf[TestBasic](), res.Example(TestBasic{A: "A", B: "B"}))
 	e.GET("/swagger-test.json", func(c echo.Context) error {
 		re, err := swaggerui.GenSpec(s)
 		if err == nil {
@@ -50,4 +50,5 @@ func main() {
 	})
 	e.Start(":2333")
 }
+
 ```
