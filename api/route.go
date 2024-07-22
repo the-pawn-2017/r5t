@@ -143,6 +143,21 @@ func (api *API) ResJSON(code int, m model.Model, opts ...res.ResModelOpts) *API 
 	return api
 }
 
+func (api *API) ResString(code int, opts ...res.ResModelOpts) *API {
+	resbody := &openapi3.Response{
+		Content: openapi3.NewContent(),
+	}
+	resbody.Content[header.TextPlain] = openapi3.NewMediaType().WithSchema(&openapi3.Schema{
+		Description: "",
+	})
+	for _, v := range opts {
+		v(resbody)
+	}
+
+	api.Operation.AddResponse(code, resbody)
+	return api
+}
+
 func (api *API) dealParam(name string, in string, opts []param.ReqParamOpts) *API {
 	if len(api.Operation.Parameters) == 0 {
 		api.Operation.Parameters = make(openapi3.Parameters, 0)

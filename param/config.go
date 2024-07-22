@@ -12,7 +12,7 @@ const (
 	InCookie = "cookie"
 )
 
-func Example(value string) ReqParamOpts {
+func Example[T string | int | float64](value T) ReqParamOpts {
 	return func(p *openapi3.Parameter) {
 		p.Example = value
 	}

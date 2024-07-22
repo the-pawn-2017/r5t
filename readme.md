@@ -8,7 +8,7 @@
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.0.9
+v0.2
 ## todo
 - [x] all components support and limit
 - [x] param config, but no example and limit
