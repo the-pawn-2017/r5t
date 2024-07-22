@@ -3,17 +3,16 @@ package tests
 import (
 	"log"
 	"net/http"
-	"os"
 	"testing"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/the-pawn-2017/r5t"
+	"github.com/the-pawn-2017/r5t/api"
 	"github.com/the-pawn-2017/r5t/model"
 	"github.com/the-pawn-2017/r5t/param"
 	"github.com/the-pawn-2017/r5t/req"
+	"github.com/the-pawn-2017/r5t/res"
 	"github.com/the-pawn-2017/r5t/spec"
-
-	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/r3labs/diff/v3"
 )
 
 // still need to test, I will design some function to test the repo.
@@ -56,31 +55,22 @@ func TestPath(t *testing.T) {
 	s := r5t.NewSpec(spec.Title("params.yaml"))
 	s.Get("/page").PageInQuery("page", 1, "pageSize", 10)
 	s.Get("/param/{abc}").Path("abc", param.Default(1), param.Example(1))
-	re, _ := s.MarshalYAML()
-	log.Println(string(re))
+	genDiff(s, "./specs/"+"002-path.yaml", t)
 }
 
-func genDiff(spec1 *r5t.Spec, fileName string, t *testing.T) {
-	d, _ := os.Getwd()
-	log.Println(d)
-	content, fileErr := os.ReadFile(fileName)
-	if fileErr != nil {
-		// t.Log(fileErr)
-		t.Fatal(fileErr)
-		return
-	}
-	specFromFile, parseErr := openapi3.NewLoader().LoadFromData(content)
-	if parseErr != nil {
-		// t.Log(parseErr)
-		t.Fatal(parseErr)
-		return
-	}
+func TestAppend(t *testing.T) {
+	s := r5t.NewSpec(spec.Title("params.yaml"))
+	s.Get("/test-append").Append(func(api *api.API) {
+		api.Operation.Tags = []string{"test_tag"}
+		api.Operation.Responses = openapi3.NewResponses()
+	})
+	genDiff(s, "./specs/"+"004-append.yaml", t)
+}
 
-	if re, err := diff.Diff(specFromFile, spec1.ExportData()); len(re) > 0 && err == nil {
-		// t.Log(re)
-		t.Fatal(re)
-		return
-	} else if err != nil && len(re) == 0 {
-		t.Fatal(err)
-	}
+func TestResString(t *testing.T) {
+	s := r5t.NewSpec(spec.Title("params.yaml"))
+	s.Get("/test-resString").ResString(http.StatusOK, res.Example("hi!"))
+	re, _ := s.MarshalYAML()
+	log.Println(string(re))
+	genDiff(s, "./specs/"+"005-resString.yaml", t)
 }

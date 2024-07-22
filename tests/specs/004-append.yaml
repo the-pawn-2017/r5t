@@ -1,0 +1,13 @@
+openapi: 3.0.0
+components: {}
+info:
+    title: params.yaml
+    version: ""
+paths:
+    /test-append:
+        get:
+            responses:
+                default:
+                    description: ""
+            tags:
+                - test_tag

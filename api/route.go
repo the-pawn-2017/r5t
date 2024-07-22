@@ -147,9 +147,10 @@ func (api *API) ResString(code int, opts ...res.ResModelOpts) *API {
 	resbody := &openapi3.Response{
 		Content: openapi3.NewContent(),
 	}
-	resbody.Content[header.TextPlain] = openapi3.NewMediaType().WithSchema(&openapi3.Schema{
-		Description: "",
-	})
+	resbody.Content[header.TextPlain] = openapi3.NewMediaType()
+	resbody.Content[header.TextPlain].Example = "there are some msg"
+	var desc string
+	resbody.Description = &desc
 	for _, v := range opts {
 		v(resbody)
 	}
@@ -206,4 +207,12 @@ func (api *API) PageInQuery(pageName string, defaultPageNum int, pageSizeName st
 	api.dealParam(pageName, param.InQuery, []param.ReqParamOpts{param.Desc("page index"), param.Default(defaultPageNum)})
 	api.dealParam(pageSizeName, param.InQuery, []param.ReqParamOpts{param.Desc("page size"), param.Default(defaultPageSizeNum)})
 	return api
+}
+
+/*
+If my API does not meet your requirements, you can modify certain things yourself using append operations.
+I hope it useful.
+*/
+func (api *API) Append(f func(api *API)) {
+	f(api)
 }

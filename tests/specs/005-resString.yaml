@@ -1,0 +1,14 @@
+openapi: 3.0.0
+components: {}
+info:
+    title: params.yaml
+    version: ""
+paths:
+    /test-resString:
+        get:
+            responses:
+                "200":
+                    description: ""
+                    content:
+                        text/plain:
+                            example: hi!

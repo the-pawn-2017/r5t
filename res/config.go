@@ -1,8 +1,6 @@
 package res
 
 import (
-	"github.com/the-pawn-2017/r5t/header"
-
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -23,6 +21,10 @@ func Form(required bool, description string) ResModelOpts {
 
 func Example(e any) ResModelOpts {
 	return func(s *openapi3.Response) {
-		s.Content[header.ApplicationJson].Example = e
+		for k, v := range s.Content {
+			if v != nil {
+				s.Content[k].Example = e
+			}
+		}
 	}
 }
