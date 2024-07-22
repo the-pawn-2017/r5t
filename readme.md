@@ -1,6 +1,6 @@
 # r5t
 
-> inspired by [a-h/rest](https://github.com/a-h/rest), testing code using `a-h/rest`
+> inspired by [a-h/rest](https://github.com/a-h/rest), It is a new implementation based on `go-openapi`。
 
 **CAREFULLY USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
 

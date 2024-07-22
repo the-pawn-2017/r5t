@@ -165,8 +165,9 @@ func (api *API) dealParam(name string, in string, opts []param.ReqParamOpts) *AP
 	pList := &api.Operation.Parameters
 	p := openapi3.ParameterRef{
 		Value: &openapi3.Parameter{
-			In:   in,
-			Name: name,
+			In:       in,
+			Name:     name,
+			Required: true,
 		}}
 	*pList = append(*pList, &p)
 
@@ -189,6 +190,7 @@ func (api *API) NeedSecurify(tokenName string, require []string) *API {
 func (api *API) Path(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InPath, opts)
 }
+
 func (api *API) Cookie(name string, opts ...param.ReqParamOpts) *API {
 	return api.dealParam(name, param.InCookie, opts)
 }

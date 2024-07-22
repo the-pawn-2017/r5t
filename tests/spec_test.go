@@ -52,10 +52,10 @@ func TestFormFile(t *testing.T) {
 	genDiff(s, "./specs/"+"000-form-file.yaml", t)
 }
 
-func TestParam(t *testing.T) {
+func TestPath(t *testing.T) {
 	s := r5t.NewSpec(spec.Title("params.yaml"))
 	s.Get("/page").PageInQuery("page", 1, "pageSize", 10)
-	s.Get("/param/{abc}").Path("abc", param.Default(1))
+	s.Get("/param/{abc}").Path("abc", param.Default(1), param.Example(1))
 	re, _ := s.MarshalYAML()
 	log.Println(string(re))
 }
