@@ -12,7 +12,7 @@ install: `go get -u github.com/the-pawn-2017/r5t`
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.2
+v0.3
 ## todo
 - [x] all components support and limit
 - [x] param config, but no example and limit
@@ -27,6 +27,7 @@ v0.2
 1. fast pagination
 2. easy to use for OAuth2
 3. concise and powerful API, like `Reqjson`,`ResJson`,`ResString`.
+4. Cusom req and res can could work in some special cases.
 ## example:
 go [`/test/spec_test`](/tests/spec_test.go) view some example
 ```golang

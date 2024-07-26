@@ -82,6 +82,26 @@ func (api *API) ReqJSON(m model.Model, opts ...req.ReqModelOpts) *API {
 	return api
 }
 
+func (api *API) ReqCustom(m model.Model, header string, opts ...req.ReqModelOpts) *API {
+	jsonContent := openapi3.NewContentWithJSONSchema(&openapi3.Schema{})
+	api.Operation.RequestBody = &openapi3.RequestBodyRef{
+		Value: &openapi3.RequestBody{
+			Content: jsonContent,
+		},
+	}
+	for _, v := range opts {
+		v(api.Operation.RequestBody.Value)
+
+	}
+	if (*api.Schemas)[m.Type.Name()] == nil {
+		model.ParseModel(m.Type, jsonContent[header].Schema.Value)
+	} else {
+		api.Operation.RequestBody.Ref = "#/components/schemas/" + m.Type.Name()
+	}
+
+	return api
+}
+
 func (api *API) ReqFormNoFile(m model.Model, opts ...req.ReqModelOpts) *API {
 	jsonContent := openapi3.NewContentWithSchema(&openapi3.Schema{}, []string{header.ApplicationXWwwFormUrlencoded})
 	api.Operation.RequestBody = &openapi3.RequestBodyRef{
@@ -133,6 +153,27 @@ func (api *API) ResJSON(code int, m model.Model, opts ...res.ResModelOpts) *API 
 	}
 	if (*api.Schemas)[m.Type.Name()] == nil {
 		model.ParseModel(m.Type, resbody.Content[header.ApplicationJson].Schema.Value)
+	} else {
+		resbody.WithJSONSchemaRef(&openapi3.SchemaRef{
+			Ref: "#/components/schemas/" + m.Type.Name(),
+		})
+		//resbody.Content[header.ApplicationJson].Schema.Ref = "#/components/schemas/" + m.Type.Name()
+	}
+	api.Operation.AddResponse(code, resbody)
+	return api
+}
+
+func (api *API) ResCustom(code int, header string, m model.Model, opts ...res.ResModelOpts) *API {
+	resbody := &openapi3.Response{
+		Content: openapi3.NewContentWithJSONSchema(&openapi3.Schema{
+			Description: "",
+		}),
+	}
+	for _, v := range opts {
+		v(resbody)
+	}
+	if (*api.Schemas)[m.Type.Name()] == nil {
+		model.ParseModel(m.Type, resbody.Content[header].Schema.Value)
 	} else {
 		resbody.WithJSONSchemaRef(&openapi3.SchemaRef{
 			Ref: "#/components/schemas/" + m.Type.Name(),
