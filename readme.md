@@ -2,11 +2,11 @@
 
 > It is a new implementation based on `go-openapi`。
 
+install: `go get -u github.com/the-pawn-2017/r5t`
+
 **CAREFULLY USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
 
 **I am currently testing with my own projects to refine R5T, expecting it to stabilize by the end of August. At that point, I will mark R5T as ready for official use, making it convenient for everyone.**
-
-
 
 ## why create this repo?
 1. I would like to implement more other features, such as support for GIN and ECHO.
