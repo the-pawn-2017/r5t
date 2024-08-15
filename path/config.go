@@ -13,7 +13,7 @@ func Desc(desc string) PathOpts {
 
 func Summary(desc string) PathOpts {
 	return func(s *openapi3.Operation) {
-		s.Description = desc
+		s.Summary = desc
 	}
 }
 
