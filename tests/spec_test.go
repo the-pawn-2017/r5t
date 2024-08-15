@@ -74,3 +74,9 @@ func TestResString(t *testing.T) {
 	log.Println(string(re))
 	genDiff(s, "./specs/"+"005-resString.yaml", t)
 }
+
+func TestPagination(t *testing.T) {
+	s := r5t.NewSpec(spec.Title("pagination.yaml"))
+	s.Get("/test-pagination").PageInQuery("page", 1, "pageSize", 10).ResString(http.StatusOK, res.Example("hi"))
+	genDiff(s, "./specs/"+"006-pagination.yaml", t)
+}

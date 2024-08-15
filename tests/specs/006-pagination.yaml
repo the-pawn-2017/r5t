@@ -1,0 +1,27 @@
+openapi: 3.0.0
+components: {}
+info:
+    title: pagination.yaml
+    version: ""
+paths:
+    /test-pagination:
+        get:
+            parameters:
+                - description: page index
+                  in: query
+                  name: page
+                  required: true
+                  schema:
+                    default: 1
+                - description: page size
+                  in: query
+                  name: pageSize
+                  required: true
+                  schema:
+                    default: 10
+            responses:
+                "200":
+                    content:
+                        text/plain:
+                            example: hi
+                    description: ""

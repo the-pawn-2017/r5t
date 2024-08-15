@@ -24,9 +24,18 @@ v0.2
 - [x] Support other web server,now,echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
 
 ## some useful feature
-1. fast pagination
-2. easy to use for OAuth2
-3. concise and powerful API, like `Reqjson`,`ResJson`,`ResString`.
+### 1. fast pagination
+```golang
+s := r5t.NewSpec(spec.Title("pagination.yaml"))
+s.Get("/test-pagination").PageInQuery("page", 1, "pageSize", 10).ResString(http.StatusOK, res.Example("hi"))
+```
+### 2. easy to use for OAuth2
+
+### 3. concise and powerful API, like `Reqjson`,`ResJson`,`ResString`.
+```golang
+s := r5t.NewSpec(spec.Title("example reqString"))
+s.Get("/test-resString").ResString(http.StatusOK, res.Example("hi!"))
+```
 ## example:
 go [`/test/spec_test`](/tests/spec_test.go) view some example
 ```golang
