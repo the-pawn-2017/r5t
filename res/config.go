@@ -21,10 +21,17 @@ func Form(required bool, description string) ResModelOpts {
 
 func Example(e any) ResModelOpts {
 	return func(s *openapi3.Response) {
+
 		for k, v := range s.Content {
 			if v != nil {
 				s.Content[k].Example = e
 			}
 		}
+	}
+}
+
+func Desc(e string) ResModelOpts {
+	return func(s *openapi3.Response) {
+		s.Description = &e
 	}
 }

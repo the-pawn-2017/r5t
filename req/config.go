@@ -35,8 +35,9 @@ func FormFile(name string, description string, required bool) ReqModelOpts {
 				}
 				v.Schema.Value.Properties[name] = &openapi3.SchemaRef{
 					Value: &openapi3.Schema{
-						Type:   &openapi3.Types{"string"},
-						Format: "bin",
+						Type:        &openapi3.Types{"string"},
+						Format:      "bin",
+						Description: description,
 					},
 				}
 				// maybe has png、GiF, so using switch

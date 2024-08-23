@@ -207,9 +207,9 @@ func (api *API) dealParam(name string, in string, opts []param.ReqParamOpts) *AP
 	pList := &api.Operation.Parameters
 	p := openapi3.ParameterRef{
 		Value: &openapi3.Parameter{
-			In:       in,
-			Name:     name,
-			Required: true,
+			In:   in,
+			Name: name,
+			//Required: true,
 		}}
 	*pList = append(*pList, &p)
 
@@ -253,6 +253,8 @@ func (api *API) PageInQuery(pageName string, defaultPageNum int, pageSizeName st
 /*
 If my API does not meet your requirements, you can modify certain things yourself using append operations.
 I hope it useful.
+api has Operation and Schemas, it can be directly update.
+like tests/TestAppend func
 */
 func (api *API) Append(f func(api *API)) {
 	f(api)
