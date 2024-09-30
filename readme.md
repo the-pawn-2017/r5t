@@ -1,6 +1,6 @@
 # r5t
 
-> It is a new implementation based on `go-openapi`。
+> It is a tool for generating Swagger documents for Go projects; this tool is based on go-openapi. It can be embedded in your web project.
 
 install: `go get -u github.com/the-pawn-2017/r5t`
 
@@ -12,7 +12,7 @@ install: `go get -u github.com/the-pawn-2017/r5t`
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.3
+v0.4
 ## todo
 - [x] all components support and limit
 - [x] param config, but no example and limit
@@ -55,6 +55,63 @@ type Test struct {
 		ReqJSON(model.ModelOf[Test](), req.WithExample(Test{A: "A", B: "B"})).
 		ResJSON(http.StatusOK, model.ModelOf[Test](), res.WithExample(Test{A: "A", B: "B"}))
 ```
+### embed swagger-ui
+
+```golang
+package main
+
+import (
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/the-pawn-2017/r5t"
+	"github.com/the-pawn-2017/r5t/model"
+	"github.com/the-pawn-2017/r5t/req"
+	"github.com/the-pawn-2017/r5t/res"
+	"github.com/the-pawn-2017/r5t/security"
+	"github.com/the-pawn-2017/r5t/swaggerui"
+)
+
+type TestBasic struct {
+	A string
+	B string `validate:"required"`
+}
+
+func main() {
+	e := echo.New()
+	e.Use(middleware.Logger())
+	s := r5t.NewSpec()
+	s.Security(
+		security.OAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token",
+			security.AddScope("openid", "OPENID IS USING FOR ID")),
+	).
+		Post("/gkd").NeedSecurify("ziteal", []string{"openid"}).
+		ReqJSON(model.ModelOf[TestBasic](), req.Example(TestBasic{A: "A", B: "B"})).
+		ResJSON(http.StatusOK, model.ModelOf[TestBasic](), res.Example(TestBasic{A: "A", B: "B"}))
+	e.GET("/swagger-test.json", func(c echo.Context) error {
+		re, err := swaggerui.GenSpec(s)
+		if err == nil {
+			return c.JSONBlob(http.StatusOK, re)
+		} else {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+	})
+	e.GET("/swagger/*", func(c echo.Context) error {
+		paramStr := c.Param("*")
+		kind, content, err := swaggerui.GetSwaggerUIFile("/swagger-test.json", paramStr)
+		if err == nil {
+			return c.Blob(http.StatusOK, kind, content)
+		}
+		return c.String(http.StatusInternalServerError, err.Error())
+	})
+	e.Start(":2333")
+}
+```
+
+
+[`example/echo`](./example/echo/echo.md)
+
 ## tools 
 [swagger-ui-edit](https://editor-next.swagger.io/)
 > inspired by [a-h/rest](https://github.com/a-h/rest)

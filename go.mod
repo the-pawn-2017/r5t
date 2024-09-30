@@ -4,12 +4,7 @@ go 1.22.5
 
 toolchain go1.22.6
 
-require (
-	github.com/getkin/kin-openapi v0.126.0
-	github.com/josephburnett/jd v1.8.1
-)
-
-require gopkg.in/yaml.v2 v2.4.0 // indirect
+require github.com/getkin/kin-openapi v0.126.0
 
 require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect

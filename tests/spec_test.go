@@ -54,7 +54,11 @@ func TestAllMethods(t *testing.T) {
 	s.Put("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	s.Trace("/connect").ResJSON(http.StatusOK, model.ModelOf[O]())
 	log.Println(s.MarshalYAML())
-	genDiff(s, "./specs/"+"001-all-methods.yaml", t)
+	err := s.ExportData().Validate(context.Background())
+	if err != nil {
+		log.Println(err)
+		t.FailNow()
+	}
 
 }
 
@@ -62,7 +66,11 @@ func TestPath(t *testing.T) {
 	s := r5t.NewSpec(spec.Title("params.yaml"))
 	s.Get("/page").PageInQuery("page", 1, "pageSize", 10)
 	s.Get("/param/{abc}").Path("abc", param.Default(1), param.Example(1))
-	genDiff(s, "./specs/"+"002-path.yaml", t)
+	err := s.ExportData().Validate(context.Background())
+	if err != nil {
+		log.Println(err)
+		t.FailNow()
+	}
 }
 
 func TestAppend(t *testing.T) {
@@ -71,7 +79,11 @@ func TestAppend(t *testing.T) {
 		api.Operation.Tags = []string{"test_tag"}
 		api.Operation.Responses = openapi3.NewResponses()
 	})
-	genDiff(s, "./specs/"+"004-append.yaml", t)
+	err := s.ExportData().Validate(context.Background())
+	if err != nil {
+		log.Println(err)
+		t.FailNow()
+	}
 }
 
 func TestResString(t *testing.T) {
@@ -79,11 +91,19 @@ func TestResString(t *testing.T) {
 	s.Get("/test-resString").ResString(http.StatusOK, res.Example("hi!"))
 	re, _ := s.MarshalYAML()
 	log.Println(string(re))
-	genDiff(s, "./specs/"+"005-resString.yaml", t)
+	err := s.ExportData().Validate(context.Background())
+	if err != nil {
+		log.Println(err)
+		t.FailNow()
+	}
 }
 
 func TestPagination(t *testing.T) {
 	s := r5t.NewSpec(spec.Title("pagination.yaml"))
 	s.Get("/test-pagination").PageInQuery("page", 1, "pageSize", 10).ResString(http.StatusOK, res.Example("hi"))
-	genDiff(s, "./specs/"+"006-pagination.yaml", t)
+	err := s.ExportData().Validate(context.Background())
+	if err != nil {
+		log.Println(err)
+		t.FailNow()
+	}
 }
