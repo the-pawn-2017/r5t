@@ -46,13 +46,6 @@ func FormFile(name string, description string, required bool) ReqModelOpts {
 	}
 }
 
-// Deprecated: use WithOther instead.
-func WithJSON(required bool, description string) ReqModelOpts {
-	return func(s *openapi3.RequestBody) {
-		s.Content[header.ApplicationJson] = nil
-	}
-}
-
 func Required() ReqModelOpts {
 	return func(s *openapi3.RequestBody) {
 		s.Required = true

@@ -12,7 +12,7 @@ import (
 )
 
 type Spec struct {
-	// some info, do not have apis
+	// all information
 	root openapi3.T
 }
 
@@ -35,12 +35,11 @@ func NewSpec(specs ...spec.SpecOpts) *Spec {
 			Schemas:         make(openapi3.Schemas),
 			SecuritySchemes: make(openapi3.SecuritySchemes),
 		},
+		OpenAPI: "3.0.0.",
 	}
-	s.root.Info = &openapi3.Info{}
 	for _, v := range specs {
 		v(&s.root)
 	}
-	s.root.OpenAPI = "3.0.0"
 	return &s
 }
 
@@ -53,16 +52,18 @@ func (s *Spec) addNewApi(path string, method string, opts []path.PathOpts) *api.
 	var newApi *api.API = &api.API{
 		Operation: &openapi3.Operation{
 			Description: "",
+			Responses:   &openapi3.Responses{},
 		},
 		Schemas: &s.root.Components.Schemas,
 	}
+	// 属于kin-openapi自带的添加路由的方法
 	s.root.AddOperation(path, method, newApi.Operation)
+	// 处理该路径配置
 	newApi.DealPathItem(newApi.Operation, opts)
-	newApi.Operation.Responses = &openapi3.Responses{}
 	return newApi
 }
 
-// some options function
+// some rest function
 func (s *Spec) Get(path string, opts ...path.PathOpts) *api.API {
 
 	return s.addNewApi(path, "GET", opts)
