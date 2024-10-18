@@ -1,27 +1,23 @@
 # r5t
 
-> It is a tool for generating Swagger documents for Go projects; this tool is based on go-openapi. It can be embedded in your web project.
+> It is a tool for generating Swagger/openApi  documents for Go projects; this tool is based on go-openapi. It can be embedded in your web project.
 
 install: `go get -u github.com/the-pawn-2017/r5t`
-
-**CAREFULLY USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
-
-**I am currently testing with my own projects to refine R5T, expecting it to stabilize by the end of August. At that point, I will mark R5T as ready for official use, making it convenient for everyone.**
 
 ## why create this repo?
 1. I would like to implement more other features, such as support for GIN and ECHO.
 2. Since many of my projects after that require REST API documentation, I'm more motivated to maintain it.
 ## version
-v0.4
+v0.5
 ## todo
-- [x] all components support and limit
-- [x] param config, but no example and limit
-- [x] Registering res&req model,now,it can use json,form, others type in developing.
-- [x] Supporting OAuth2 , only code and implicit
-- [x] register model
-- [ ] complete test
-- [ ] full document for this repo
-- [x] Support other web server,now,echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
+- ✅ all components support and limit
+- ✅ param config, but no example and limit
+- ✅ Registering res&req model,now,it can use json,form, others type in developing.
+- ✅ Supporting OAuth2 , only code and implicit
+- ✅ register model
+- 🚧 complete test
+- 🚧 full document for this repo
+- ✅ Support other web server,now,echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
 
 ## some useful feature
 ### 1. fast pagination
@@ -112,6 +108,9 @@ func main() {
 
 [`example/echo`](./example/echo/echo.md)
 
+**CAREFULLY USE IT IN YOUR PROJECT, BECAUSE IT IN DEVELOPING**
+
+**I am currently testing with my own projects to refine R5T, expecting it to stabilize by the end of August. At that point, I will mark R5T as ready for official use, making it convenient for everyone.**
 ## tools 
 [swagger-ui-edit](https://editor-next.swagger.io/)
 > inspired by [a-h/rest](https://github.com/a-h/rest)
