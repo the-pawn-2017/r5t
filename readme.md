@@ -1,6 +1,7 @@
 # r5t
 
-> It is a tool for generating Swagger/openApi  documents for Go projects; this tool is based on go-openapi. It can be embedded in your web project.
+> 省流版：这是一个用go 代码生成swagger/openApi文档的库，不需要写注释！;这个库基于`go-openapi`，可以嵌入到web项目中。[文档连接](https://juejin.cn/user/272334613918430/posts)
+> Automatically generated OpenAPI 3/swagger documentation via Go code, without relying on comments. It can be embedded in your web project.
 
 install: `go get -u github.com/the-pawn-2017/r5t`
 
@@ -10,14 +11,13 @@ install: `go get -u github.com/the-pawn-2017/r5t`
 ## version
 v0.5
 ## todo
-- ✅ all components support and limit
-- ✅ param config, but no example and limit
-- ✅ Registering res&req model,now,it can use json,form, others type in developing.
+- ✅ all openAPI/swagger components support and limit
+- ✅ Registering res&req model,now,it can use json,form.
 - ✅ Supporting OAuth2 , only code and implicit
 - ✅ register model
 - 🚧 complete test
 - 🚧 full document for this repo
-- ✅ Support other web server,now,echo can use r5t by some function, it's in [`example/echo`](./example/echo/echo.md)
+- ✅ Support other web server,now,echo can use `r5t` by some function, it's in [`example/echo`](./example/echo/echo.md)
 
 ## some useful feature
 ### 1. fast pagination
@@ -26,7 +26,13 @@ s := r5t.NewSpec(spec.Title("pagination.yaml"))
 s.Get("/test-pagination").PageInQuery("page", 1, "pageSize", 10).ResString(http.StatusOK, res.Example("hi"))
 ```
 ### 2. easy to use for OAuth2
-
+```golang
+s := spec.NewSpec()
+s.Security(
+	security.WithOAuth2Code("ziteal", "http://10.45.8.189:8080/oauth/v2/authorize", "http://10.45.8.189:8080/oauth/v2/token",
+	security.AddScope("openid", "OPENID IS USING FOR ID")),
+)
+```
 ### 3. concise and powerful API, like `Reqjson`,`ResJson`,`ResString`.
 ```golang
 s := r5t.NewSpec(spec.Title("example reqString"))
