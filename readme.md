@@ -1,6 +1,6 @@
 # r5t
 
-> 省流版：这是一个用go 代码生成swagger/openApi文档的库，不需要写注释！;这个库基于`go-openapi`，可以嵌入到web项目中。[文档连接](https://juejin.cn/user/272334613918430/posts)
+> 省流版：这是一个用go 代码生成swagger/openApi文档的库，不需要写注释！;这个库基于`go-openapi`，可以嵌入到web项目中。[文档连接](https://juejin.cn/post/7390569548367822858)
 > Automatically generated OpenAPI 3/swagger documentation via Go code, without relying on comments. It can be embedded in your web project.
 
 install: `go get -u github.com/the-pawn-2017/r5t`
